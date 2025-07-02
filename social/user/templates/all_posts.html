@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title>Home - All Posts</title>
+    {% include 'nav.html' %}
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-4" style="max-width: 750px;">
+    <h2 class="text-center mb-4">📸 All Posts Feed</h2>
+
+    {% if posts %}
+        {% for post in posts %}
+            <div class="card mb-4 shadow-sm">
+                <!-- Post Header -->
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <a href="{% url 'profile' post.user.id %}" class="fw-bold text-decoration-none text-dark">
+                        {{ post.user.username }}
+                    </a>
+                    <span class="text-muted small">{{ post.created_at }}</span>
+                </div>
+
+                <!-- Post Image -->
+                <div class="card-body pb-2">
+                    <img src="{{ post.image.url }}" alt="Post Image"
+                         class="img-fluid rounded mb-3 w-100"
+                         style="max-height: 450px; object-fit: cover;">
+
+                    <p class="fw-semibold mb-1">{{ post.caption }}</p>
+                    <p class="text-muted small mb-2">❤️ {{ post.likes.count }} likes</p>
+
+                    <!-- Like Form -->
+                    <form method="post" action="{% url 'like_post' post.id %}" class="mb-3">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger">❤️ Like</button>
+                    </form>
+
+                    <!-- Comments (short view) -->
+                    <h6 class="text-muted mb-2">💬 Comments</h6>
+                    <ul class="list-group list-group-flush mb-2">
+                        {% for comment in post.comments.all|slice:":2" %}
+                            <li class="list-group-item px-0 py-1 border-0">
+                                <strong>{{ comment.user.username }}:</strong> {{ comment.text }}
+                                <br><small class="text-muted">{{ comment.created_at }}</small>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item px-0 py-1 border-0 text-muted">No comments yet.</li>
+                        {% endfor %}
+                    </ul>
+
+                    {% if post.comments.count > 2 %}
+                        <a href="{% url 'view_post' post.id %}" class="text-decoration-none small">
+                            View all {{ post.comments.count }} comments
+                        </a>
+                    {% endif %}
+
+                    <!-- Add Comment -->
+                    <form method="post" action="{% url 'comment_post' post.id %}" class="d-flex align-items-center mt-3">
+                        {% csrf_token %}
+                        <input type="text" name="text" class="form-control form-control-sm me-2"
+                               placeholder="Add a comment..." required>
+                        <button type="submit" class="btn btn-sm btn-outline-primary">Post</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info text-center">No posts found.</div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+        <a href="{% url 'create_post' %}" class="btn btn-success">➕ Create a New Post</a>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

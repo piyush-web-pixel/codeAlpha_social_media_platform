@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+       {% load static %}
+    {% include 'nav.html' %}
+    <title>View Post</title>
+</head>
+<body>
+    {% if posts %}
+        <h2>All Uploaded Posts</h2>
+        {% for post in posts %}
+            <div style="border:1px solid #ccc; margin-bottom:20px; padding:10px;">
+                <h3>{{ post.user.username }}</h3>
+                <img src="{{ post.image.url }}" alt="Post Image" style="max-width:400px;"><br>
+                <p>{{ post.caption }}</p>
+                <p>Posted at: {{ post.created_at }}</p>
+                <p>Likes: {{ post.likes.count }}</p>
+                <form method="post" action="{% url 'like_post' post.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Like</button>
+                </form>
+                <h4>Comments</h4>
+                <ul>
+                    {% for comment in post.comments.all %}
+                        <li><strong>{{ comment.user.username }}:</strong> {{ comment.text }} ({{ comment.created_at }})</li>
+                    {% empty %}
+                        <li>No comments yet.</li>
+                    {% endfor %}
+                </ul>
+                <form method="post" action="{% url 'comment_post' post.id %}">
+                    {% csrf_token %}
+                    <textarea name="text" rows="2" required></textarea><br>
+                    <button type="submit">Comment</button>
+                </form>
+            </div>
+        {% empty %}
+            <p>No posts found.</p>
+        {% endfor %}
+    {% else %}
+        <h2>{{ post.user.username }}'s Post</h2>
+        <img src="{{ post.image.url }}" alt="Post Image" style="max-width:400px;"><br>
+        <p>{{ post.caption }}</p>
+        <p>Posted at: {{ post.created_at }}</p>
+        <p>Likes: {{ post.likes.count }}</p>
+        <form method="post" action="{% url 'like_post' post.id %}">
+            {% csrf_token %}
+            <button type="submit">Like</button>
+        </form>
+        <h3>Comments</h3>
+        <ul>
+            {% for comment in post.comments.all %}
+                <li><strong>{{ comment.user.username }}:</strong> {{ comment.text }} ({{ comment.created_at }})</li>
+            {% empty %}
+                <li>No comments yet.</li>
+            {% endfor %}
+        </ul>
+        <h4>Add a Comment</h4>
+        <form method="post" action="{% url 'comment_post' post.id %}">
+            {% csrf_token %}
+            <textarea name="text" rows="2" required></textarea><br>
+            <button type="submit">Comment</button>
+        </form>
+    {% endif %}
+    <p><a href="{% url 'create_post' %}">Create a Post</a></p>
+</body>
+</html>

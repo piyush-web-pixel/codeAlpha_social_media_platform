@@ -1,0 +1,116 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+/* Basic Reset & Body Styling */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8; /* Light background for the whole page */
+    color: #333;
+}
+
+/* Navigation Bar Styling */
+.navbar {
+    background-color:rgb(242, 233, 217); /* Light, warm background for the nav bar */
+    padding: 15px 20px; /* More vertical padding, some horizontal */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    display: flex; /* Use flexbox for alignment */
+    justify-content: space-between; /* Space out items */
+    align-items: center; /* Vertically align items */
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px; /* Space between links */
+    margin-left: 10px;
+}
+
+.navbar-auth {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Space between auth links/text */
+    margin-right: 15px;
+}
+
+.navbar a {
+    text-decoration: none; /* Remove underline */
+    color: #007bff; /* Primary blue for links */
+    font-weight: 500; /* Slightly bolder text */
+    transition: color 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
+    display: flex; /* Use flexbox for icon and text alignment */
+    align-items: center; /* Vertically center icon and text */
+}
+
+.navbar a i {
+    margin-right: 8px; /* Space between the icon and the text */
+    color: #007bff; /* Icon color, matching the link text */
+    font-size: 1.1em; /* Slightly larger icon size */
+}
+
+.navbar a:hover,
+.navbar a:focus {
+    color: #0056b3; /* Darker blue on hover/focus */
+    transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.navbar a:hover i,
+.navbar a:focus i {
+    color: #0056b3; /* Icon color also changes on hover */
+}
+
+.navbar span {
+    color: #555; /* Less prominent color for welcome text */
+    font-weight: normal;
+}
+
+/* Responsive Adjustments (Optional but Recommended) */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column; /* Stack items vertically on small screens */
+        padding: 15px;
+    }
+
+    .navbar-links,
+    .navbar-auth {
+        flex-direction: column;
+        width: 100%; /* Take full width */
+        gap: 10px; /* Reduce gap */
+        margin-top: 10px; /* Add some space between sections */
+        
+    }
+
+    .navbar a,
+    .navbar span {
+        padding: 5px 0; /* More clickable area */
+        text-align: center;
+    }
+
+    .navbar a {
+        justify-content: center; /* Center icon and text when stacked */
+    }
+}
+</style>
+
+<nav class="navbar">
+    <div class="navbar-links">
+        <a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
+        <a href="{% url 'all_posts' %}"><i class="fas fa-images"></i> My Posts</a>
+        <a href="{% url 'create_post' %}"><i class="fas fa-plus-square"></i> Upload Post</a>
+        <a href="{% url 'search_users' %}"><i class="fas fa-search"></i> Search</a>
+    </div>
+
+    <div class="navbar-auth">
+        {% if user.is_authenticated %}
+            <a href="{% url 'profile' user.id %}"><i class="fas fa-user-circle"></i> Profile</a>
+            <span>Welcome, {{ user.username }}!</span>
+            <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
+            <a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Register</a>
+        {% endif %}
+    </div>
+</nav>
